@@ -4,7 +4,7 @@ namespace: ""
 runtime: go
 registry: ""
 image: docker.io/villardl/sw:latest
-imageDigest: ""
+imageDigest: sha256:4c1257743951d1d21d04ba3a36cda369230d5690c7ab90802763c75e06c70c99
 build: local
 git: {}
 builder: gcr.io/paketo-buildpacks/builder:base

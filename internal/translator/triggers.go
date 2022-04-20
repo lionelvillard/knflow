@@ -32,16 +32,23 @@ func newTriggerTarget(sw types.SW) TriggerTarget {
         },
         Spec: kns.ServiceSpec{
             ConfigurationSpec: kns.ConfigurationSpec{Template: kns.RevisionTemplateSpec{
-                ObjectMeta: metav1.ObjectMeta{},
+                ObjectMeta: metav1.ObjectMeta{
+                    Annotations: map[string]string{
+                        "autoscaling.knative.dev/min-scale": "1",
+                    },
+                },
                 Spec: kns.RevisionSpec{
                     PodSpec: corev1.PodSpec{
                         Containers: []corev1.Container{
                             {
-                                Image: "docker.io/villardl/sw",
+                                Image:           "docker.io/villardl/sw",
+                                ImagePullPolicy: corev1.PullAlways,
                                 Env: []corev1.EnvVar{{
-                                    Name:      "MACHINE",
-                                    Value:     string(asjson),
-                                    ValueFrom: nil,
+                                    Name:  "STATES",
+                                    Value: string(asjson),
+                                }, {
+                                    Name:  "BROKER",
+                                    Value: "http://broker-ingress.knative-eventing.svc.cluster.local/sw/default",
                                 }},
                             },
                         },
@@ -69,12 +76,13 @@ func (t *TriggerTarget) AddTrigger(name string, subscriber duckv1.Destination) {
     trigger := kne.Trigger{
         TypeMeta: metav1.TypeMeta{
             Kind:       "Trigger",
-            APIVersion: "v1",
+            APIVersion: "eventing.knative.dev/v1",
         },
         ObjectMeta: metav1.ObjectMeta{
             Name: MakeK8sName(name),
         },
         Spec: kne.TriggerSpec{
+            Broker:     "default", // TODO: configurable
             Subscriber: subscriber,
             Delivery:   nil,
         },

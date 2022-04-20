@@ -1,6 +1,6 @@
 # Serverless Workflow State Machine
 
-This function provides a generic runtime for Serverless Workflows.
+This function provides a minimal runtime for Serverless Workflow programs.
 
 ## Running the function locally
 
@@ -13,7 +13,7 @@ kn func build
 then run it:
 
 ```sh
-kn func run -b -e MACHINE=<MACHINE> -e BROKER=<BROKER_URL>
+kn func run -b -e STATES=<STATES> -e BROKER=<BROKER_URL>
 ```
 
 where `MACHINE` is a compiled serverless workflow description and `BROKER`
@@ -22,7 +22,7 @@ the URL pointing to a Knative Broker.
 ## Example
 
 ```shell
-kn func run -b -e MACHINE='{"id":"helloworld", "start":"hello", "states":[{"
+kn func run -b -e STATES='{"id":"helloworld", "start":"hello", "states":[{"
 name":"hello","type":"inject","data":"HELLO", "end":true}]}' -e BROKER="localhost:8081"
 ```
 
